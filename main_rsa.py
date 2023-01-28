@@ -6,7 +6,6 @@ import my_rsa
 from my_rsa import utils
 
 
-
 # pubkey, privkey = my_rsa.key.new_keys(512)
 # privkey.export_pkcs("rsapriv.DER")
 # pubkey.export_pkcs("prsapub.DER")
@@ -22,6 +21,36 @@ from my_rsa import utils
 # dec = my_rsa.RSA.RSA.decrypt(encrypted, privkey)
 # print(dec)
 
+
+def test_key_creations():
+    pubkey, privkey = my_rsa.key.new_keys(512)
+    pubkey.export_pkcs(f"keys/test_pub.DER")
+    privkey.export_pkcs(f"keys/test_priv.DER")
+    return True
+
+
+def test_encrypt():
+    pubkey = my_rsa.key.PublicKey.import_pkcs(f"keys/test_pub.DER")
+    message = utils.load_message('test2.txt')
+    encrypted = my_rsa.RSA.RSA2.encrypt(message, pubkey)
+    print(encrypted)
+    utils.save_message(encrypted, 'test')
+    return True
+
+
+def test_decrypt():
+    priv = my_rsa.key.PrivateKey.import_pkcs(f"keys/test_priv.DER")
+    encrypted = utils.load_message('test')
+    dec = my_rsa.RSA.RSA2.decrypt(encrypted, priv)
+    print(dec)
+    return True
+
+
+#assert test_key_creations() == True
+assert test_encrypt() == True
+assert test_decrypt() == True
+
+sys.exit(0)
 
 print("Welcome to my RSA implementation")
 while True:
@@ -62,7 +91,7 @@ while True:
         print(f"Доступные ключи: {', '.join(filter(lambda x: 'pub' in x, os.listdir('keys')))}")
         keyfile = input()
         pubkey = my_rsa.key.PublicKey.import_pkcs(f"keys/{keyfile}")
-        encrypted = my_rsa.RSA.RSA.encrypt(message, pubkey)
+        encrypted = my_rsa.RSA.RSA2.encrypt(message, pubkey)
         print(encrypted)
         save_action = input("Сохранить?(yes/no)")
         while save_action not in ("yes", "no"):
@@ -77,5 +106,5 @@ while True:
         encrypted_file = input("Укажите путь к зашифрованному сообщению: ")
         encrypted = utils.load_message(encrypted_file)
         privkey = my_rsa.key.PrivateKey.import_pkcs(f"keys/{keyfile}")
-        dec = my_rsa.RSA.RSA.decrypt(encrypted, privkey)
+        dec = my_rsa.RSA.RSA2.decrypt(encrypted, privkey)
         print(dec)

@@ -60,7 +60,6 @@ def _update_blinding_factor(n: int):
         # Переиспользуем предыдущие вычисления.
         blindfac = pow(blindfac, 2, n)
         blindfac_inverse = pow(blindfac_inverse, 2, n)
-
     return blindfac, blindfac_inverse
 
 
